@@ -44,7 +44,7 @@
   <header>
     <h1>PathSnap</h1>
     <label for="api">API address</label>
-    <input id="api" type="text" value="http://localhost:8000" spellcheck="false">
+    <input id="api" type="text" value="http://localhost:8080" spellcheck="false">
   </header>
   <ul id="trips" aria-label="Evaluation trips"></ul>
   <footer><button id="run" disabled>Match route</button></footer>
@@ -97,7 +97,7 @@ async function run() {
     d.gps_points.forEach(p => L.circleMarker(p, { renderer: canvas, radius: 3, color: '#2b6cb0', weight: 0, fillOpacity: .8 }).addTo(layer));
     map.fitBounds(L.latLngBounds(d.gps_points), { padding: [30, 30] });
     const m = d.metrics, f = v => (v * 100).toFixed(1) + '%';
-    $('metrics').innerHTML = `<dt>GPS points</dt><dd>${d.n_points}</dd><dt>Route precision</dt><dd>${f(m.route_precision)}</dd><dt>Route recall</dt><dd>${f(m.route_recall)}</dd><dt>Route F1</dt><dd>${f(m.route_f1)}</dd><dt>Inference</dt><dd>${(d.inference_ms / 1000).toFixed(2)} s</dd>`;
+    $('metrics').innerHTML = `<dt>GPS points</dt><dd>${d.n_points}</dd><dt>Route precision</dt><dd>${f(m.route_precision)}</dd><dt>Route recall</dt><dd>${f(m.route_recall)}</dd><dt>Route F1</dt><dd>${f(m.route_f1)}</dd><dt>Continuity</dt><dd>${m.route_continuity ? f(m.route_continuity) : 'N/A'}</dd><dt>Inference</dt><dd>${(d.inference_ms / 1000).toFixed(2)} s</dd>`;
     $('metrics').hidden = false; status('Trip ' + d.trip_id + ' matched.');
   } catch (e) { status('Prediction failed for trip ' + selected + ' (' + e.message + ').', true); }
   $('run').disabled = false;
