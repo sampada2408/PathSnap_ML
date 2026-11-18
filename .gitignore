@@ -1,5 +1,6 @@
 ﻿data/raw/*
 data/processed/*
+data/processed_v0/*
 !data/raw/.gitkeep
 !data/processed/.gitkeep
 __pycache__/

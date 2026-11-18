@@ -28,6 +28,7 @@ import sys
 import time
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 
 from common.contract import (
@@ -57,16 +58,18 @@ def main():
     n_trials = 5 if args.fast else args.trials
 
     # 1. Determine whether real data is available or mock data should be used
-    real_train = PROCESSED_DATA_DIR / "train.parquet"
-    real_test = PROCESSED_DATA_DIR / "student_test.parquet"
+    real_train_cand = PROCESSED_DATA_DIR / "train_candidates.parquet"
+    real_test_cand = PROCESSED_DATA_DIR / "student_test_candidates.parquet"
+    real_train_std = PROCESSED_DATA_DIR / "train.parquet"
+    real_test_std = PROCESSED_DATA_DIR / "student_test.parquet"
 
     mock_train = PROCESSED_DATA_DIR / "mock_train.parquet"
     mock_test = PROCESSED_DATA_DIR / "mock_student_test.parquet"
 
-    if not args.mock and real_train.exists() and real_test.exists():
+    if not args.mock and (real_train_cand.exists() or real_train_std.exists()) and (real_test_cand.exists() or real_test_std.exists()):
+        train_path = real_train_cand if real_train_cand.exists() else real_train_std
+        test_path = real_test_cand if real_test_cand.exists() else real_test_std
         print(f"\n[Data] Found real processed tables in {PROCESSED_DATA_DIR}!")
-        train_path = real_train
-        test_path = real_test
         is_mock = False
     else:
         print(f"\n[Data] Using Contract 1 mock data (stand-in for P1 data pipeline)...")
@@ -81,6 +84,18 @@ def main():
     df_train = pd.read_parquet(train_path)
     print(f"[Data] Loading student-test partition: {test_path}")
     df_test = pd.read_parquet(test_path)
+
+    # Standardize column aliases if produced by P1 build_tables
+    for df in [df_train, df_test]:
+        if "delta_time_s" not in df.columns and "dt_prev" in df.columns:
+            df["delta_time_s"] = df["dt_prev"]
+        if "perp_dist_m" not in df.columns and "dist_m" in df.columns and "bearing_diff" in df.columns:
+            df["perp_dist_m"] = df["dist_m"] * np.sin(np.radians(df["bearing_diff"]))
+
+    # Use trusted labels if flagged by P1
+    if "label_trusted" in df_train.columns:
+        print(f"[Data] Filtering train to trusted labels: {(df_train['label_trusted'] == 1).sum():,} / {len(df_train):,} rows")
+        df_train = df_train[df_train["label_trusted"] == 1].reset_index(drop=True)
 
     # Validate Contract 1
     validate_candidate_table(df_train, require_label=True)
