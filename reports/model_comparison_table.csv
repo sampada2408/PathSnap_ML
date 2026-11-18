@@ -1,0 +1,7 @@
+Model,Algorithm Family,Key Configuration,CV Macro F1-score,Top-1 Accuracy,Route continuity,Student-Test Macro F1-score,Log Loss,Inference Time (ms/1k),Train Time (s)
+Logistic Regression,Linear & Probabilistic,"C=1.0, penalty=l2, solver=lbfgs",0.9985 ± 0.0006,0.9574,0.0000,0.9982,0.0039,0.47,0.02
+Random Forest,Ensemble (Bagging),"n_estimators=100, max_depth=12, min_samples_split=5",0.9997 ± 0.0003,0.9574,0.0000,0.9994,0.0013,8.79,0.32
+HistGradientBoosting,Boosting (Scikit-Learn),"max_iter=100, learning_rate=0.08, max_leaf_nodes=31",0.9993 ± 0.0002,0.9574,0.0000,0.9994,0.0016,3.24,0.30
+LightGBM,Boosting (Gradient Boosting),"n_estimators=100, learning_rate=0.08, num_leaves=31",0.9995 ± 0.0003,0.9574,0.0000,0.9994,0.0013,2.24,0.15
+XGBoost,Boosting (Gradient Boosting),"n_estimators=100, learning_rate=0.08, max_depth=6",0.9995 ± 0.0003,0.9574,0.0000,0.9994,0.0013,0.93,0.12
+Multi-Layer Perceptron (MLP),Neural Networks,"hidden_layer_sizes=(64, 32), activation=relu, solver=adam",0.9979 ± 0.0007,0.9574,0.0000,0.9970,0.0049,0.84,1.12
