@@ -12,3 +12,4 @@ uvicorn
 joblib
 pyarrow
 matplotlib
+shapely>=2.0
