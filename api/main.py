@@ -19,17 +19,29 @@ from api.evaluation import evaluate
 from api.io_utils import arc_coords, load_trip
 from api.predictor import predict_trip
 
-def _resolve_trip_root() -> Path:
+def _all_candidate_roots():
     env_root = os.getenv("TRIP_ROOT")
     if env_root:
-        return Path(env_root)
-    # Automatically prioritize evaluator_test if dropped into workspace
-    for candidate in [Path("evaluator_test"), Path("data/raw/evaluator_test"), Path("data/raw/student_test")]:
+        return [Path(env_root)]
+    roots = []
+    for candidate in [Path("evaluator_test"), Path("data/raw/student_test"), Path("data/raw/evaluator_test"), Path("student_test")]:
         if candidate.is_dir() and any(p.is_dir() for p in candidate.iterdir()):
-            return candidate
-    return Path("data/raw/student_test")
+            roots.append(candidate)
+    return roots or [Path("data/raw/student_test")]
 
-TRIP_ROOT = _resolve_trip_root()
+def _trip_catalog() -> dict[str, Path]:
+    mapping = {}
+    for r in _all_candidate_roots():
+        if r.is_dir():
+            for p in r.iterdir():
+                if p.is_dir() and p.name not in mapping:
+                    mapping[p.name] = p
+    return mapping
+
+def _trip_ids():
+    return sorted(_trip_catalog().keys())
+
+TRIP_ROOT = _all_candidate_roots()[0]
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s | %(levelname)s | %(message)s")
 log = logging.getLogger("pathsnap")
@@ -48,10 +60,8 @@ async def log_requests(request: Request, call_next):
     return response
 
 
-def _trip_ids():
-    if not TRIP_ROOT.is_dir():
-        return []
-    return sorted(p.name for p in TRIP_ROOT.iterdir() if p.is_dir())
+def _trip_ids_list():
+    return sorted(_trip_catalog().keys())
 
 
 @app.get("/")
@@ -74,9 +84,10 @@ def trips():
 
 @app.post("/predict/{trip_id}")
 def predict(trip_id: str):
-    if trip_id not in _trip_ids():  # also blocks path traversal
+    catalog = _trip_catalog()
+    if trip_id not in catalog:  # also blocks path traversal
         raise HTTPException(status_code=404, detail=f"Unknown trip '{trip_id}'")
-    trip_dir = TRIP_ROOT / trip_id
+    trip_dir = catalog[trip_id]
 
     t0 = time.perf_counter()
     result = predict_trip(trip_dir)            # never sees labels
@@ -92,6 +103,7 @@ def predict(trip_id: str):
 
     return {
         "trip_id": trip_id,
+        "source": result.get("source", "model"),
         "n_points": int(len(track)),
         "gps_points": [[float(lat), float(lon)] for lon, lat in track[:, :2]],
         "pred_route": arc_coords(nodes, arcs, route_arcs),

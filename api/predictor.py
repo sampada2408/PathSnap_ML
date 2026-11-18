@@ -212,6 +212,7 @@ def predict_trip(trip_dir: Path | str) -> Dict[str, Any]:
             "pred_arcs": [int(a) for a in pred_arcs],
             "point_count": n_points,
             "pred_count": len(pred_arcs),
+            "source": "model",
         }
 
     except Exception as e:

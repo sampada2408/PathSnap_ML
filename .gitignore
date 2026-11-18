@@ -19,3 +19,4 @@ secrets*
 .idea/
 Thumbs.db
 evaluator_test/*
+~$*.docx

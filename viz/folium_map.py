@@ -29,7 +29,26 @@ def build_map(trip_dir, pred_arcs=None, out_html="trip_map.html", margin_deg=0.0
     tid = trip_dir.name
     track, nodes, arcs = load_trip(trip_dir)
     lat, lon = track[:, 1], track[:, 0]
-    m = folium.Map(location=[lat.mean(), lon.mean()], zoom_start=15, tiles="OpenStreetMap")
+    m = folium.Map(location=[lat.mean(), lon.mean()], zoom_start=15, tiles=None)
+    folium.TileLayer(
+        tiles="https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}",
+        attr="&copy; Esri &mdash; Esri, DeLorme, NAVTEQ, TomTom",
+        name="Esri World Street Map",
+        control=True,
+    ).add_to(m)
+    folium.TileLayer(
+        tiles="https://tile.openstreetmap.de/{z}/{x}/{y}.png",
+        attr="&copy; OpenStreetMap contributors, tile.openstreetmap.de",
+        name="OpenStreetMap Mirror",
+        control=True,
+    ).add_to(m)
+    folium.TileLayer(
+        tiles="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png",
+        attr="&copy; OpenStreetMap contributors &copy; CARTO",
+        name="CartoDB Light",
+        subdomains="abcd",
+        control=True,
+    ).add_to(m)
     m.fit_bounds([[lat.min(), lon.min()], [lat.max(), lon.max()]])
 
     # road network near the trajectory only (full networks can have 300k arcs)
