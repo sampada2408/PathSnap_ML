@@ -1,0 +1,10 @@
+[
+  "dist_m",
+  "bearing_diff",
+  "speed",
+  "frac_along",
+  "arc_len_m",
+  "dist_rank",
+  "delta_time_s",
+  "perp_dist_m"
+]
