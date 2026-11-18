@@ -87,3 +87,12 @@ def gaussian_emission_log_probs(
     )
 
     return log_probs
+
+
+# Also export emission models from decoder.emission for compatibility
+from decoder.emission import (  # noqa: E402
+    classifier_log_emission,
+    gaussian_log_emission,
+    hybrid_log_emission,
+)
+

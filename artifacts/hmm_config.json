@@ -1,0 +1,8 @@
+{
+  "beta": 5.0,
+  "sigma_z": 4.07,
+  "unreachable_penalty_m": 350.0,
+  "gap_threshold_s": 10.0,
+  "dijkstra_cutoff_m": 1000.0,
+  "clf_weight": 0.85
+}
