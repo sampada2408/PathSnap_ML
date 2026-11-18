@@ -1,0 +1,111 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PathSnap</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+  :root {
+    --bg: #eef1f4; --panel: #ffffff; --ink: #14212b; --muted: #5b6b78; --line: #d5dce2;
+    --gps: #2b6cb0; --route: #d1495b; --accent: #14212b; --ok: #2f7d4f; --err: #b3261e;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body { font-family: "Segoe UI", system-ui, sans-serif; background: var(--bg); color: var(--ink); display: grid; grid-template-columns: 300px 1fr; }
+  aside { background: var(--panel); border-right: 1px solid var(--line); display: flex; flex-direction: column; min-height: 0; }
+  header { padding: 18px 18px 12px; border-bottom: 1px solid var(--line); }
+  h1 { font-size: 20px; margin: 0 0 12px; letter-spacing: .2px; }
+  label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 4px; }
+  input[type=text] { width: 100%; padding: 8px 10px; border: 1px solid var(--line); border-radius: 4px; font: inherit; }
+  #trips { list-style: none; margin: 0; padding: 8px; overflow: auto; flex: 1; }
+  #trips button { width: 100%; text-align: left; padding: 9px 10px; margin-bottom: 2px; background: none; border: 1px solid transparent; border-radius: 4px; font: inherit; color: inherit; cursor: pointer; }
+  #trips button:hover { background: var(--bg); }
+  #trips button[aria-pressed=true] { background: var(--bg); border-color: var(--ink); font-weight: 600; }
+  footer { padding: 12px 18px 18px; border-top: 1px solid var(--line); }
+  #run { width: 100%; padding: 11px; background: var(--accent); color: #fff; border: 0; border-radius: 4px; font: inherit; font-weight: 600; cursor: pointer; }
+  #run:disabled { opacity: .45; cursor: not-allowed; }
+  :focus-visible { outline: 3px solid var(--gps); outline-offset: 2px; }
+  main { position: relative; min-width: 0; }
+  #map { position: absolute; inset: 0; }
+  #panel { position: absolute; z-index: 1000; top: 12px; right: 12px; width: 270px; background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 14px 16px; box-shadow: 0 2px 10px rgba(20,33,43,.12); }
+  #status { font-size: 14px; margin: 0 0 10px; }
+  #status.err { color: var(--err); }
+  dl { margin: 0; display: grid; grid-template-columns: 1fr auto; gap: 6px 12px; font-size: 14px; }
+  dt { color: var(--muted); } dd { margin: 0; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .legend { margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--line); font-size: 13px; display: grid; gap: 6px; }
+  .legend span { display: flex; align-items: center; gap: 8px; }
+  .sw { width: 22px; height: 0; border-top: 4px solid; } .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--gps); margin: 0 6px; }
+  @media (max-width: 760px) { body { grid-template-columns: 1fr; grid-template-rows: auto 1fr; } aside { max-height: 45vh; border-right: 0; border-bottom: 1px solid var(--line); } main { min-height: 55vh; } #panel { width: auto; left: 12px; } }
+</style>
+</head>
+<body>
+<aside>
+  <header>
+    <h1>PathSnap</h1>
+    <label for="api">API address</label>
+    <input id="api" type="text" value="http://localhost:8000" spellcheck="false">
+  </header>
+  <ul id="trips" aria-label="Evaluation trips"></ul>
+  <footer><button id="run" disabled>Match route</button></footer>
+</aside>
+<main>
+  <div id="map"></div>
+  <section id="panel" aria-live="polite">
+    <p id="status">Loading trips...</p>
+    <dl id="metrics" hidden></dl>
+    <div class="legend">
+      <span><i class="dot"></i>GPS observations</span>
+      <span><i class="sw" style="border-color:var(--route)"></i>Predicted route</span>
+    </div>
+  </section>
+</main>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const $ = id => document.getElementById(id);
+const map = L.map('map', { preferCanvas: true }).setView([20, 78], 4);
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '&copy; OpenStreetMap' }).addTo(map);
+let layer = L.layerGroup().addTo(map), selected = null;
+const api = () => $('api').value.replace(/\/+$/, '');
+const status = (msg, err = false) => { const s = $('status'); s.textContent = msg; s.className = err ? 'err' : ''; };
+
+async function loadTrips() {
+  $('trips').innerHTML = ''; selected = null; $('run').disabled = true;
+  try {
+    const r = await fetch(api() + '/trips'); if (!r.ok) throw new Error('HTTP ' + r.status);
+    const { trips } = await r.json();
+    if (!trips.length) return status('The API has no trips. Check TRIP_ROOT on the API laptop.', true);
+    trips.forEach(id => {
+      const li = document.createElement('li'), b = document.createElement('button');
+      b.textContent = 'Trip ' + id; b.setAttribute('aria-pressed', 'false');
+      b.onclick = () => { selected = id; document.querySelectorAll('#trips button').forEach(x => x.setAttribute('aria-pressed', 'false')); b.setAttribute('aria-pressed', 'true'); $('run').disabled = false; status('Trip ' + id + ' selected.'); };
+      li.appendChild(b); $('trips').appendChild(li);
+    });
+    status('Select a trip, then match the route.');
+  } catch (e) { status('Cannot reach the API at ' + api() + '. Check the address, the API laptop IP and the firewall.', true); }
+}
+
+async function run() {
+  $('run').disabled = true; $('metrics').hidden = true; status('Matching route for trip ' + selected + '...');
+  try {
+    const r = await fetch(api() + '/predict/' + selected, { method: 'POST' });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const d = await r.json();
+    layer.clearLayers();
+    const canvas = L.canvas({ padding: 0.5 });
+    d.pred_route.length && L.polyline(d.pred_route, { color: '#d1495b', weight: 5, opacity: .9 }).addTo(layer);
+    d.gps_points.forEach(p => L.circleMarker(p, { renderer: canvas, radius: 3, color: '#2b6cb0', weight: 0, fillOpacity: .8 }).addTo(layer));
+    map.fitBounds(L.latLngBounds(d.gps_points), { padding: [30, 30] });
+    const m = d.metrics, f = v => (v * 100).toFixed(1) + '%';
+    $('metrics').innerHTML = `<dt>GPS points</dt><dd>${d.n_points}</dd><dt>Route precision</dt><dd>${f(m.route_precision)}</dd><dt>Route recall</dt><dd>${f(m.route_recall)}</dd><dt>Route F1</dt><dd>${f(m.route_f1)}</dd><dt>Inference</dt><dd>${(d.inference_ms / 1000).toFixed(2)} s</dd>`;
+    $('metrics').hidden = false; status('Trip ' + d.trip_id + ' matched.');
+  } catch (e) { status('Prediction failed for trip ' + selected + ' (' + e.message + ').', true); }
+  $('run').disabled = false;
+}
+
+$('run').onclick = run; $('api').onchange = loadTrips;
+const q = new URLSearchParams(location.search).get('api'); if (q) $('api').value = q;
+loadTrips();
+</script>
+</body>
+</html>
