@@ -18,3 +18,4 @@ secrets*
 .vscode/
 .idea/
 Thumbs.db
+evaluator_test/*

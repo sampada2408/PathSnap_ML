@@ -104,6 +104,7 @@ async function run() {
 }
 
 $('run').onclick = run; $('api').onchange = loadTrips;
+if (location.origin && location.origin.startsWith('http')) $('api').value = location.origin;
 const q = new URLSearchParams(location.search).get('api'); if (q) $('api').value = q;
 loadTrips();
 </script>

@@ -1,4 +1,10 @@
 
+# Early import of lightgbm on Windows prevents OpenMP DLL conflict
+try:
+    import lightgbm  # noqa: F401
+except ImportError:
+    pass
+
 import json
 from pathlib import Path
 
@@ -20,7 +26,14 @@ from decoder.viterbi import ViterbiDecoder
 # Paths
 CANDIDATES_FILE = Path("data/processed/student_test_candidates.parquet")
 REFERENCE_FILE = Path("data/processed/student_test_reference_arcs.json")
-TRIP_ROOT = Path("data/raw/Student folder/student_test")
+
+def _resolve_trip_root() -> Path:
+    for p in [Path("data/raw/student_test"), Path("data/raw/Student folder/student_test"), Path("student_test")]:
+        if p.exists() and any(p.iterdir()):
+            return p
+    return Path("data/raw/student_test")
+
+TRIP_ROOT = _resolve_trip_root()
 OUTPUT_DIR = Path("data/processed")
 
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
