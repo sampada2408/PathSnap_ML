@@ -1,0 +1,11 @@
+check,trips_affected,total_count,trips_total
+NaN track rows,0,0.0,90
+Duplicate track rows,0,0.0,90
+Non-increasing timestamps,0,0.0,90
+Gap > 5 s,47,1260.0,90
+Isolated nodes,0,0.0,90
+Self-loop arcs,9,24.0,90
+Arc refs invalid node,0,0.0,90
+Route refs invalid arc,0,0.0,90
+Route not contiguous,11,,90
+Jump > 200 m between points,11,,90
