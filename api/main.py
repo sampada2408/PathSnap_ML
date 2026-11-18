@@ -13,6 +13,7 @@ from pathlib import Path
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
 
 from api.evaluation import evaluate
 from api.io_utils import arc_coords, load_trip
@@ -51,6 +52,14 @@ def _trip_ids():
     if not TRIP_ROOT.is_dir():
         return []
     return sorted(p.name for p in TRIP_ROOT.iterdir() if p.is_dir())
+
+
+@app.get("/")
+def index():
+    ui_path = Path("ui/index.html")
+    if ui_path.exists():
+        return FileResponse(ui_path)
+    return {"status": "ok", "message": "PathSnap API running"}
 
 
 @app.get("/health")
