@@ -1,0 +1,248 @@
+{
+  "Logistic Regression": {
+    "model_name": "Logistic Regression",
+    "algorithm_family": "Linear & Probabilistic",
+    "key_configuration": "C=1.0, penalty=l2, solver=lbfgs",
+    "cv_macro_f1_mean": 0.9984962971647156,
+    "cv_macro_f1_std": 0.0005770867539470003,
+    "cv_top1_acc_mean": 0.9629624788330708,
+    "cv_top1_acc_std": 0.004789993056881009,
+    "cv_log_loss_mean": 0.003318335333316514,
+    "cv_log_loss_std": 0.00044338222108687155,
+    "test_top1_accuracy": 0.9574468085106383,
+    "test_macro_f1": 0.9982015733624143,
+    "test_log_loss": 0.00393596156448456,
+    "test_precision": 0.9939759036144579,
+    "test_recall": 1.0,
+    "test_route_continuity": 0.0,
+    "train_time_seconds": 0.024,
+    "inference_time_ms_per_1k": 0.47,
+    "confusion_matrix": [
+      [
+        2604,
+        3
+      ],
+      [
+        0,
+        495
+      ]
+    ],
+    "hyperparameters": {
+      "C": 1.0,
+      "penalty": "l2",
+      "solver": "lbfgs",
+      "max_iter": 1000,
+      "class_weight": null,
+      "random_state": 42
+    },
+    "random_state": 42
+  },
+  "Random Forest": {
+    "model_name": "Random Forest",
+    "algorithm_family": "Ensemble (Bagging)",
+    "key_configuration": "n_estimators=100, max_depth=12, min_samples_split=5",
+    "cv_macro_f1_mean": 0.999698749101468,
+    "cv_macro_f1_std": 0.0002824374682068299,
+    "cv_top1_acc_mean": 0.9629624788330708,
+    "cv_top1_acc_std": 0.004789993056881009,
+    "cv_log_loss_mean": 0.0013555834127808104,
+    "cv_log_loss_std": 0.00024299429980504774,
+    "test_top1_accuracy": 0.9574468085106383,
+    "test_macro_f1": 0.9993985615500127,
+    "test_log_loss": 0.0013172358195359688,
+    "test_precision": 1.0,
+    "test_recall": 0.997979797979798,
+    "test_route_continuity": 0.0,
+    "train_time_seconds": 0.316,
+    "inference_time_ms_per_1k": 8.79,
+    "confusion_matrix": [
+      [
+        2607,
+        0
+      ],
+      [
+        1,
+        494
+      ]
+    ],
+    "hyperparameters": {
+      "n_estimators": 100,
+      "max_depth": 12,
+      "min_samples_split": 5,
+      "min_samples_leaf": 2,
+      "max_features": "sqrt",
+      "n_jobs": -1,
+      "random_state": 42
+    },
+    "random_state": 42
+  },
+  "HistGradientBoosting": {
+    "model_name": "HistGradientBoosting",
+    "algorithm_family": "Boosting (Scikit-Learn)",
+    "key_configuration": "max_iter=100, learning_rate=0.08, max_leaf_nodes=31",
+    "cv_macro_f1_mean": 0.9993213334618047,
+    "cv_macro_f1_std": 0.0001519630112502928,
+    "cv_top1_acc_mean": 0.9629624788330708,
+    "cv_top1_acc_std": 0.004789993056881009,
+    "cv_log_loss_mean": 0.0013079491274463084,
+    "cv_log_loss_std": 0.0008148549534769922,
+    "test_top1_accuracy": 0.9574468085106383,
+    "test_macro_f1": 0.9993985615500127,
+    "test_log_loss": 0.0015636240626675903,
+    "test_precision": 1.0,
+    "test_recall": 0.997979797979798,
+    "test_route_continuity": 0.0,
+    "train_time_seconds": 0.297,
+    "inference_time_ms_per_1k": 3.24,
+    "confusion_matrix": [
+      [
+        2607,
+        0
+      ],
+      [
+        1,
+        494
+      ]
+    ],
+    "hyperparameters": {
+      "max_iter": 100,
+      "learning_rate": 0.08,
+      "max_leaf_nodes": 31,
+      "min_samples_leaf": 20,
+      "l2_regularization": 0.0,
+      "random_state": 42
+    },
+    "random_state": 42
+  },
+  "LightGBM": {
+    "model_name": "LightGBM",
+    "algorithm_family": "Boosting (Gradient Boosting)",
+    "key_configuration": "n_estimators=100, learning_rate=0.08, num_leaves=31",
+    "cv_macro_f1_mean": 0.9995475213930545,
+    "cv_macro_f1_std": 0.000281639703159401,
+    "cv_top1_acc_mean": 0.9629624788330708,
+    "cv_top1_acc_std": 0.004789993056881009,
+    "cv_log_loss_mean": 0.0009842609564436253,
+    "cv_log_loss_std": 0.000793947241930679,
+    "test_top1_accuracy": 0.9574468085106383,
+    "test_macro_f1": 0.9993985615500127,
+    "test_log_loss": 0.0012946623992435393,
+    "test_precision": 1.0,
+    "test_recall": 0.997979797979798,
+    "test_route_continuity": 0.0,
+    "train_time_seconds": 0.149,
+    "inference_time_ms_per_1k": 2.24,
+    "confusion_matrix": [
+      [
+        2607,
+        0
+      ],
+      [
+        1,
+        494
+      ]
+    ],
+    "hyperparameters": {
+      "n_estimators": 100,
+      "learning_rate": 0.08,
+      "num_leaves": 31,
+      "max_depth": -1,
+      "min_child_samples": 20,
+      "subsample": 0.85,
+      "colsample_bytree": 0.85,
+      "reg_alpha": 0.0,
+      "reg_lambda": 0.0,
+      "random_state": 42,
+      "n_jobs": -1,
+      "verbose": -1
+    },
+    "random_state": 42
+  },
+  "XGBoost": {
+    "model_name": "XGBoost",
+    "algorithm_family": "Boosting (Gradient Boosting)",
+    "key_configuration": "n_estimators=100, learning_rate=0.08, max_depth=6",
+    "cv_macro_f1_mean": 0.9994732620745413,
+    "cv_macro_f1_std": 0.0003012643065342455,
+    "cv_top1_acc_mean": 0.9627185763940466,
+    "cv_top1_acc_std": 0.004914386178538307,
+    "cv_log_loss_mean": 0.0011659825347755007,
+    "cv_log_loss_std": 0.0008884969351418874,
+    "test_top1_accuracy": 0.9574468085106383,
+    "test_macro_f1": 0.9993985615500127,
+    "test_log_loss": 0.0012913784336984063,
+    "test_precision": 1.0,
+    "test_recall": 0.997979797979798,
+    "test_route_continuity": 0.0,
+    "train_time_seconds": 0.121,
+    "inference_time_ms_per_1k": 0.93,
+    "confusion_matrix": [
+      [
+        2607,
+        0
+      ],
+      [
+        1,
+        494
+      ]
+    ],
+    "hyperparameters": {
+      "n_estimators": 100,
+      "learning_rate": 0.08,
+      "max_depth": 6,
+      "min_child_weight": 1,
+      "subsample": 0.85,
+      "colsample_bytree": 0.85,
+      "reg_alpha": 0.0,
+      "reg_lambda": 1.0,
+      "eval_metric": "logloss",
+      "random_state": 42,
+      "n_jobs": -1
+    },
+    "random_state": 42
+  },
+  "Multi-Layer Perceptron (MLP)": {
+    "model_name": "Multi-Layer Perceptron (MLP)",
+    "algorithm_family": "Neural Networks",
+    "key_configuration": "hidden_layer_sizes=(64, 32), activation=relu, solver=adam",
+    "cv_macro_f1_mean": 0.9978937131926331,
+    "cv_macro_f1_std": 0.0007307919168374506,
+    "cv_top1_acc_mean": 0.962718873473753,
+    "cv_top1_acc_std": 0.004599901592312924,
+    "cv_log_loss_mean": 0.004680261649401443,
+    "cv_log_loss_std": 0.00228071763455032,
+    "test_top1_accuracy": 0.9574468085106383,
+    "test_macro_f1": 0.9970074986180664,
+    "test_log_loss": 0.004939869861335044,
+    "test_precision": 0.99,
+    "test_recall": 1.0,
+    "test_route_continuity": 0.0,
+    "train_time_seconds": 1.117,
+    "inference_time_ms_per_1k": 0.84,
+    "confusion_matrix": [
+      [
+        2602,
+        5
+      ],
+      [
+        0,
+        495
+      ]
+    ],
+    "hyperparameters": {
+      "hidden_layer_sizes": [
+        64,
+        32
+      ],
+      "activation": "relu",
+      "solver": "adam",
+      "alpha": 0.0001,
+      "learning_rate_init": 0.001,
+      "max_iter": 200,
+      "early_stopping": true,
+      "validation_fraction": 0.1,
+      "random_state": 42
+    },
+    "random_state": 42
+  }
+}

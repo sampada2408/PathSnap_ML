@@ -1,0 +1,7 @@
+Metric,Untuned Model,Tuned Model,Improvement
+Cross-Validation Macro F1-score,0.9995 ± 0.0003,0.9995 ± 0.0003,+0.0000
+Student-Testing Top-1 Accuracy,0.9574,0.9574,+0.0000
+Student-Testing Macro F1-score,0.9994,0.9994,+0.0000
+Student-Testing Candidate Log Loss,0.0013,0.0014,+0.0001
+Inference Time (ms per 1k),1.57,0.94,-0.63
+Training Time (s),0.10,0.06,-0.05
