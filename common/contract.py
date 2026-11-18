@@ -1,6 +1,5 @@
 """
 PathSnap Shared Contracts (FROZEN - Step 0)
-===========================================
 This module defines the shared contracts between all 4 sub-teams:
   P1: data_pipeline/
   P2: modeling/

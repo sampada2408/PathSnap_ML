@@ -5,6 +5,7 @@ Implements the Newson & Krumm (2009) exponential transition model:
 - Compares road network distance d_net to straight-line GPS distance d_gps
 - Handles unreachable / disconnected road segments with a robust penalty floor
 - Dynamically scales parameters during large GPS temporal gaps (tunnels, dropouts)
+- Also includes network_distance and transition_log_probability for RoadGraph compatibility.
 """
 
 from __future__ import annotations
@@ -12,7 +13,10 @@ from __future__ import annotations
 import math
 from typing import Optional
 
-from decoder.graph import RoadNetworkGraph
+import numpy as np
+
+from decoder.distance import ShortestPath
+from decoder.graph import RoadGraph, RoadNetworkGraph
 
 # Default transition scale parameter (beta), from Newson & Krumm 2009
 DEFAULT_BETA = 5.0
@@ -74,3 +78,67 @@ def compute_log_transition_probability(
     diff = abs(d_net - d_gps)
     log_prob = -math.log(effective_beta) - (diff / effective_beta)
     return float(log_prob)
+
+
+def network_distance(
+    graph: RoadGraph,
+    shortest_path: ShortestPath,
+    prev_arc_id: int,
+    curr_arc_id: int,
+    prev_frac: float,
+    curr_frac: float,
+) -> float:
+    """
+    Calculate directed road-network distance between
+    two candidate positions on road arcs using RoadGraph.
+    """
+    if not 0.0 <= prev_frac <= 1.0:
+        raise ValueError("prev_frac must be between 0 and 1")
+    if not 0.0 <= curr_frac <= 1.0:
+        raise ValueError("curr_frac must be between 0 and 1")
+
+    prev_length = graph.get_arc_length(prev_arc_id)
+    curr_length = graph.get_arc_length(curr_arc_id)
+
+    if prev_arc_id == curr_arc_id and curr_frac >= prev_frac:
+        return (curr_frac - prev_frac) * prev_length
+
+    _, prev_end = graph.get_arc_endpoints(prev_arc_id)
+    curr_start, _ = graph.get_arc_endpoints(curr_arc_id)
+
+    remaining_distance = (1.0 - prev_frac) * prev_length
+    connecting_distance = shortest_path.distance(prev_end, curr_start)
+    current_distance = curr_frac * curr_length
+
+    if not np.isfinite(connecting_distance):
+        return float("inf")
+
+    return remaining_distance + connecting_distance + current_distance
+
+
+def transition_log_probability(
+    graph: RoadGraph,
+    shortest_path: ShortestPath,
+    prev_arc_id: int,
+    curr_arc_id: int,
+    prev_frac: float,
+    curr_frac: float,
+    gps_distance_m: float,
+    beta: float = 20.0,
+) -> float:
+    """
+    Calculate log transition probability between two candidate road positions using RoadGraph.
+    """
+    if beta <= 0:
+        raise ValueError("beta must be greater than zero")
+    if gps_distance_m < 0 or not np.isfinite(gps_distance_m):
+        raise ValueError("gps_distance_m must be finite and non-negative")
+
+    road_distance = network_distance(
+        graph, shortest_path, prev_arc_id, curr_arc_id, prev_frac, curr_frac
+    )
+    if not np.isfinite(road_distance):
+        return float("-inf")
+
+    difference = abs(road_distance - gps_distance_m)
+    return -np.log(beta) - difference / beta

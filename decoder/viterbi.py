@@ -4,6 +4,7 @@ PathSnap Person 3: Viterbi Trellis Decoder (Contract 3 Implementation)
 Implements the Viterbi dynamic programming decoding algorithm for map-matching
 strictly satisfying Contract 3:
     decode(cands, probs, arcs, nodes, times) -> list[int]
+Also provides low-level viterbi_decode(emission_log_probs, transition_log_probs).
 """
 
 from __future__ import annotations
@@ -30,6 +31,61 @@ from decoder.transition import (
     DEFAULT_UNREACHABLE_PENALTY_M,
     compute_log_transition_probability,
 )
+
+
+def viterbi_decode(
+    emission_log_probs: list[np.ndarray],
+    transition_log_probs: list[np.ndarray],
+) -> list[int]:
+    """
+    Find the most likely sequence of candidate indices
+    using the Viterbi algorithm.
+    """
+    n_steps = len(emission_log_probs)
+    if n_steps == 0:
+        return []
+
+    if len(transition_log_probs) != n_steps - 1:
+        raise ValueError(
+            "There must be exactly one transition matrix between consecutive GPS points."
+        )
+
+    emissions = [np.asarray(values, dtype=float) for values in emission_log_probs]
+    for values in emissions:
+        if values.ndim != 1 or len(values) == 0:
+            raise ValueError("Every GPS point must have a non-empty 1D emission array.")
+        if np.isnan(values).any() or np.isposinf(values).any():
+            raise ValueError("Invalid emission log probabilities.")
+
+    scores = emissions[0].copy()
+    backpointers = []
+
+    for t in range(1, n_steps):
+        transitions = np.asarray(transition_log_probs[t - 1], dtype=float)
+        expected_shape = (len(emissions[t - 1]), len(emissions[t]))
+        if transitions.shape != expected_shape:
+            raise ValueError(
+                f"Transition matrix at step {t} has shape {transitions.shape}; expected {expected_shape}."
+            )
+        if np.isnan(transitions).any() or np.isposinf(transitions).any():
+            raise ValueError("Invalid transition log probabilities.")
+
+        combined = scores[:, np.newaxis] + transitions
+        best_previous = np.argmax(combined, axis=0)
+        scores = combined[best_previous, np.arange(len(emissions[t]))] + emissions[t]
+        backpointers.append(best_previous)
+
+    if not np.isfinite(scores).any():
+        raise ValueError("No valid path exists through the candidate sequence.")
+
+    best_final = int(np.argmax(scores))
+    path = [best_final]
+    for pointers in reversed(backpointers):
+        best_final = int(pointers[best_final])
+        path.append(best_final)
+
+    path.reverse()
+    return path
 
 
 class ViterbiDecoder:
@@ -90,8 +146,7 @@ class ViterbiDecoder:
         T = len(unique_points)
         point_groups = dict(tuple(df.groupby("point_idx")))
 
-        # Approximate GPS coordinates per point from candidate projections or nodes
-        # If timestamps not provided, assume 1.0 s nominal intervals
+        # Approximate timestamps
         if times is not None and len(times) == T:
             t_arr = np.asarray(times, dtype=float)
         else:
@@ -141,9 +196,6 @@ class ViterbiDecoder:
             K_curr = len(curr_states)
 
             dt = max(0.1, t_arr[t] - t_arr[t - 1])
-
-            # Approximate d_gps from candidate locations or central difference
-            # Median distance between top-1 candidates
             d_gps = 15.0 * dt  # Realistic default: ~15 m/s
 
             v_prev = V[t - 1]
@@ -196,10 +248,7 @@ class ViterbiDecoder:
         recovered_indices.reverse()
 
         # Map back to arc IDs
-        predicted_arcs = [
-            trellis_states[t][idx] for t, idx in enumerate(recovered_indices)
-        ]
-
+        predicted_arcs = [trellis_states[t][idx] for t, idx in enumerate(recovered_indices)]
         return predicted_arcs
 
 
