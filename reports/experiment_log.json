@@ -3,28 +3,28 @@
     "model_name": "Logistic Regression",
     "algorithm_family": "Linear & Probabilistic",
     "key_configuration": "C=1.0, penalty=l2, solver=lbfgs",
-    "cv_macro_f1_mean": 0.9984962971647156,
-    "cv_macro_f1_std": 0.0005770867539470003,
-    "cv_top1_acc_mean": 0.9629624788330708,
-    "cv_top1_acc_std": 0.004789993056881009,
-    "cv_log_loss_mean": 0.003318335333316514,
-    "cv_log_loss_std": 0.00044338222108687155,
-    "test_top1_accuracy": 0.9574468085106383,
-    "test_macro_f1": 0.9982015733624143,
-    "test_log_loss": 0.00393596156448456,
-    "test_precision": 0.9939759036144579,
-    "test_recall": 1.0,
-    "test_route_continuity": 0.0,
-    "train_time_seconds": 0.024,
-    "inference_time_ms_per_1k": 0.47,
+    "cv_macro_f1_mean": 0.8793868020520048,
+    "cv_macro_f1_std": 0.019449260218785624,
+    "cv_top1_acc_mean": 0.8216351043103012,
+    "cv_top1_acc_std": 0.03267503637142307,
+    "cv_log_loss_mean": 0.13651575526764487,
+    "cv_log_loss_std": 0.01847299597766725,
+    "test_top1_accuracy": 0.837160751565762,
+    "test_macro_f1": 0.8869295219753335,
+    "test_log_loss": 0.11796663844478131,
+    "test_precision": 0.8033883902490838,
+    "test_recall": 0.79099560761347,
+    "test_route_continuity": 0.686342940447266,
+    "train_time_seconds": 1.58,
+    "inference_time_ms_per_1k": 0.16,
     "confusion_matrix": [
       [
-        2604,
-        3
+        161473,
+        3702
       ],
       [
-        0,
-        495
+        3997,
+        15127
       ]
     ],
     "hyperparameters": {
@@ -41,28 +41,28 @@
     "model_name": "Random Forest",
     "algorithm_family": "Ensemble (Bagging)",
     "key_configuration": "n_estimators=100, max_depth=12, min_samples_split=5",
-    "cv_macro_f1_mean": 0.999698749101468,
-    "cv_macro_f1_std": 0.0002824374682068299,
-    "cv_top1_acc_mean": 0.9629624788330708,
-    "cv_top1_acc_std": 0.004789993056881009,
-    "cv_log_loss_mean": 0.0013555834127808104,
-    "cv_log_loss_std": 0.00024299429980504774,
-    "test_top1_accuracy": 0.9574468085106383,
-    "test_macro_f1": 0.9993985615500127,
-    "test_log_loss": 0.0013172358195359688,
-    "test_precision": 1.0,
-    "test_recall": 0.997979797979798,
-    "test_route_continuity": 0.0,
-    "train_time_seconds": 0.316,
-    "inference_time_ms_per_1k": 8.79,
+    "cv_macro_f1_mean": 0.9004705682564221,
+    "cv_macro_f1_std": 0.020202808729402347,
+    "cv_top1_acc_mean": 0.8313951186178038,
+    "cv_top1_acc_std": 0.034041412803498,
+    "cv_log_loss_mean": 0.10095846785106273,
+    "cv_log_loss_std": 0.01685054810611679,
+    "test_top1_accuracy": 0.8524530271398747,
+    "test_macro_f1": 0.9133180218831611,
+    "test_log_loss": 0.08392929511912575,
+    "test_precision": 0.8702315508912211,
+    "test_recall": 0.8194938297427317,
+    "test_route_continuity": 0.6969716563248325,
+    "train_time_seconds": 73.891,
+    "inference_time_ms_per_1k": 2.45,
     "confusion_matrix": [
       [
-        2607,
-        0
+        162838,
+        2337
       ],
       [
-        1,
-        494
+        3452,
+        15672
       ]
     ],
     "hyperparameters": {
@@ -80,28 +80,28 @@
     "model_name": "HistGradientBoosting",
     "algorithm_family": "Boosting (Scikit-Learn)",
     "key_configuration": "max_iter=100, learning_rate=0.08, max_leaf_nodes=31",
-    "cv_macro_f1_mean": 0.9993213334618047,
-    "cv_macro_f1_std": 0.0001519630112502928,
-    "cv_top1_acc_mean": 0.9629624788330708,
-    "cv_top1_acc_std": 0.004789993056881009,
-    "cv_log_loss_mean": 0.0013079491274463084,
-    "cv_log_loss_std": 0.0008148549534769922,
-    "test_top1_accuracy": 0.9574468085106383,
-    "test_macro_f1": 0.9993985615500127,
-    "test_log_loss": 0.0015636240626675903,
-    "test_precision": 1.0,
-    "test_recall": 0.997979797979798,
-    "test_route_continuity": 0.0,
-    "train_time_seconds": 0.297,
-    "inference_time_ms_per_1k": 3.24,
+    "cv_macro_f1_mean": 0.9018424642042705,
+    "cv_macro_f1_std": 0.01955120071532546,
+    "cv_top1_acc_mean": 0.8331517635101309,
+    "cv_top1_acc_std": 0.03427383209443443,
+    "cv_log_loss_mean": 0.0994264620591722,
+    "cv_log_loss_std": 0.01805124406523751,
+    "test_top1_accuracy": 0.8555323590814197,
+    "test_macro_f1": 0.9153393596332514,
+    "test_log_loss": 0.08080730900651888,
+    "test_precision": 0.8566931654484341,
+    "test_recall": 0.8396256013386321,
+    "test_route_continuity": 0.6987428783305042,
+    "train_time_seconds": 10.115,
+    "inference_time_ms_per_1k": 2.65,
     "confusion_matrix": [
       [
-        2607,
-        0
+        162489,
+        2686
       ],
       [
-        1,
-        494
+        3067,
+        16057
       ]
     ],
     "hyperparameters": {
@@ -118,28 +118,28 @@
     "model_name": "LightGBM",
     "algorithm_family": "Boosting (Gradient Boosting)",
     "key_configuration": "n_estimators=100, learning_rate=0.08, num_leaves=31",
-    "cv_macro_f1_mean": 0.9995475213930545,
-    "cv_macro_f1_std": 0.000281639703159401,
-    "cv_top1_acc_mean": 0.9629624788330708,
-    "cv_top1_acc_std": 0.004789993056881009,
-    "cv_log_loss_mean": 0.0009842609564436253,
-    "cv_log_loss_std": 0.000793947241930679,
-    "test_top1_accuracy": 0.9574468085106383,
-    "test_macro_f1": 0.9993985615500127,
-    "test_log_loss": 0.0012946623992435393,
-    "test_precision": 1.0,
-    "test_recall": 0.997979797979798,
-    "test_route_continuity": 0.0,
-    "train_time_seconds": 0.149,
-    "inference_time_ms_per_1k": 2.24,
+    "cv_macro_f1_mean": 0.9021210657395375,
+    "cv_macro_f1_std": 0.019477883679044468,
+    "cv_top1_acc_mean": 0.8330246220793794,
+    "cv_top1_acc_std": 0.03419694723255377,
+    "cv_log_loss_mean": 0.09819312150956058,
+    "cv_log_loss_std": 0.017958168255839208,
+    "test_top1_accuracy": 0.8555845511482255,
+    "test_macro_f1": 0.9157277731139389,
+    "test_log_loss": 0.08075002519741913,
+    "test_precision": 0.8548096298653092,
+    "test_recall": 0.8429198912361431,
+    "test_route_continuity": 0.6963268095823875,
+    "train_time_seconds": 3.45,
+    "inference_time_ms_per_1k": 1.08,
     "confusion_matrix": [
       [
-        2607,
-        0
+        162437,
+        2738
       ],
       [
-        1,
-        494
+        3004,
+        16120
       ]
     ],
     "hyperparameters": {
@@ -162,28 +162,28 @@
     "model_name": "XGBoost",
     "algorithm_family": "Boosting (Gradient Boosting)",
     "key_configuration": "n_estimators=100, learning_rate=0.08, max_depth=6",
-    "cv_macro_f1_mean": 0.9994732620745413,
-    "cv_macro_f1_std": 0.0003012643065342455,
-    "cv_top1_acc_mean": 0.9627185763940466,
-    "cv_top1_acc_std": 0.004914386178538307,
-    "cv_log_loss_mean": 0.0011659825347755007,
-    "cv_log_loss_std": 0.0008884969351418874,
-    "test_top1_accuracy": 0.9574468085106383,
-    "test_macro_f1": 0.9993985615500127,
-    "test_log_loss": 0.0012913784336984063,
-    "test_precision": 1.0,
-    "test_recall": 0.997979797979798,
-    "test_route_continuity": 0.0,
-    "train_time_seconds": 0.121,
-    "inference_time_ms_per_1k": 0.93,
+    "cv_macro_f1_mean": 0.9025422190351524,
+    "cv_macro_f1_std": 0.019445819158000057,
+    "cv_top1_acc_mean": 0.8337748740565635,
+    "cv_top1_acc_std": 0.034102969872585626,
+    "cv_log_loss_mean": 0.0974316065659222,
+    "cv_log_loss_std": 0.01746540936127516,
+    "test_top1_accuracy": 0.852348643006263,
+    "test_macro_f1": 0.914489674456687,
+    "test_log_loss": 0.0808538270833815,
+    "test_precision": 0.8598090511893846,
+    "test_recall": 0.8335076343861116,
+    "test_route_continuity": 0.6972635273945464,
+    "train_time_seconds": 6.503,
+    "inference_time_ms_per_1k": 0.56,
     "confusion_matrix": [
       [
-        2607,
-        0
+        162576,
+        2599
       ],
       [
-        1,
-        494
+        3184,
+        15940
       ]
     ],
     "hyperparameters": {
@@ -205,28 +205,28 @@
     "model_name": "Multi-Layer Perceptron (MLP)",
     "algorithm_family": "Neural Networks",
     "key_configuration": "hidden_layer_sizes=(64, 32), activation=relu, solver=adam",
-    "cv_macro_f1_mean": 0.9978937131926331,
-    "cv_macro_f1_std": 0.0007307919168374506,
-    "cv_top1_acc_mean": 0.962718873473753,
-    "cv_top1_acc_std": 0.004599901592312924,
-    "cv_log_loss_mean": 0.004680261649401443,
-    "cv_log_loss_std": 0.00228071763455032,
-    "test_top1_accuracy": 0.9574468085106383,
-    "test_macro_f1": 0.9970074986180664,
-    "test_log_loss": 0.004939869861335044,
-    "test_precision": 0.99,
-    "test_recall": 1.0,
-    "test_route_continuity": 0.0,
-    "train_time_seconds": 1.117,
-    "inference_time_ms_per_1k": 0.84,
+    "cv_macro_f1_mean": 0.8992092339838822,
+    "cv_macro_f1_std": 0.020339982812939236,
+    "cv_top1_acc_mean": 0.8308193439990976,
+    "cv_top1_acc_std": 0.03424377901985099,
+    "cv_log_loss_mean": 0.10196929413984976,
+    "cv_log_loss_std": 0.01962528269693871,
+    "test_top1_accuracy": 0.8551670146137788,
+    "test_macro_f1": 0.9151097030960309,
+    "test_log_loss": 0.08145620711673239,
+    "test_precision": 0.8533806697753286,
+    "test_recall": 0.8421355364986405,
+    "test_route_continuity": 0.7012345426958557,
+    "train_time_seconds": 251.332,
+    "inference_time_ms_per_1k": 1.8,
     "confusion_matrix": [
       [
-        2602,
-        5
+        162408,
+        2767
       ],
       [
-        0,
-        495
+        3019,
+        16105
       ]
     ],
     "hyperparameters": {
