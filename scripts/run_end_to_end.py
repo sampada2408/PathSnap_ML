@@ -17,6 +17,7 @@ Runs the complete production map-matching pipeline on all student-test trips:
 from __future__ import annotations
 
 import time
+import argparse
 from pathlib import Path
 
 import pandas as pd
@@ -24,14 +25,20 @@ import pandas as pd
 from api.evaluation import evaluate
 from api.predictor import predict_trip
 
-STUDENT_TEST_DIR = Path("data/raw/student_test")
 REPORTS_DIR = Path("reports")
 
 
-def run_all():
-    trip_dirs = sorted([p for p in STUDENT_TEST_DIR.iterdir() if p.is_dir()])
+def get_default_data_dir() -> Path:
+    if Path("evaluator_test").is_dir() and any(Path("evaluator_test").iterdir()):
+        return Path("evaluator_test")
+    return Path("data/raw/student_test")
+
+
+def run_all(data_dir: Path | str | None = None):
+    target_dir = Path(data_dir) if data_dir else get_default_data_dir()
+    trip_dirs = sorted([p for p in target_dir.iterdir() if p.is_dir()])
     print(f"\n================================================================================")
-    print(f"PATHSNAP END-TO-END SYSTEM BENCHMARK ({len(trip_dirs)} Student-Test Trips)")
+    print(f"PATHSNAP END-TO-END SYSTEM BENCHMARK ({len(trip_dirs)} Trips in {target_dir})")
     print(f"================================================================================")
 
     results = []
@@ -92,20 +99,22 @@ def run_all():
     df_full = pd.concat([df_results, pd.DataFrame([mean_row])], ignore_index=True)
 
     REPORTS_DIR.mkdir(parents=True, exist_ok=True)
-    csv_path = REPORTS_DIR / "end_to_end_evaluation_table.csv"
-    md_path = REPORTS_DIR / "end_to_end_evaluation_table.md"
+    # Save reports using target directory stem
+    prefix = f"{target_dir.name}_" if target_dir.name != "student_test" else ""
+    csv_path = REPORTS_DIR / f"{prefix}end_to_end_evaluation_table.csv"
+    md_path = REPORTS_DIR / f"{prefix}end_to_end_evaluation_table.md"
 
     df_full.to_csv(csv_path, index=False)
 
-    md_content = f"# PathSnap End-to-End System Benchmark\n\n"
-    md_content += f"Evaluated across {len(trip_dirs)} student-test evaluation trips:\n\n"
+    md_content = f"# PathSnap End-to-End System Benchmark ({target_dir.name})\n\n"
+    md_content += f"Evaluated across {len(trip_dirs)} trips in `{target_dir}`:\n\n"
     md_content += df_full.to_markdown(index=False) + "\n"
 
     with open(md_path, "w", encoding="utf-8") as f:
         f.write(md_content)
 
     print("\n" + "=" * 80)
-    print("END-TO-END EVALUATION SUMMARY TABLE")
+    print(f"END-TO-END EVALUATION SUMMARY TABLE ({target_dir.name})")
     print("=" * 80)
     print(df_full.to_markdown(index=False))
     print(f"\nSaved evaluation reports to:")
@@ -115,4 +124,7 @@ def run_all():
 
 
 if __name__ == "__main__":
-    run_all()
+    parser = argparse.ArgumentParser(description="PathSnap End-to-End Benchmark")
+    parser.add_argument("--data", default=None, help="Path to trips folder (e.g. evaluator_test)")
+    args = parser.parse_args()
+    run_all(args.data)

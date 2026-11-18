@@ -18,7 +18,17 @@ from api.evaluation import evaluate
 from api.io_utils import arc_coords, load_trip
 from api.predictor import predict_trip
 
-TRIP_ROOT = Path(os.getenv("TRIP_ROOT", "data/raw/student_test"))
+def _resolve_trip_root() -> Path:
+    env_root = os.getenv("TRIP_ROOT")
+    if env_root:
+        return Path(env_root)
+    # Automatically prioritize evaluator_test if dropped into workspace
+    for candidate in [Path("evaluator_test"), Path("data/raw/evaluator_test"), Path("data/raw/student_test")]:
+        if candidate.is_dir() and any(p.is_dir() for p in candidate.iterdir()):
+            return candidate
+    return Path("data/raw/student_test")
+
+TRIP_ROOT = _resolve_trip_root()
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s | %(levelname)s | %(message)s")
 log = logging.getLogger("pathsnap")
