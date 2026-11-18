@@ -12,6 +12,12 @@ RULE: Do not modify this file without consensus across all sub-teams.
 
 from __future__ import annotations
 
+# Initialize OpenMP runtimes early on Windows
+try:
+    import lightgbm
+except ImportError:
+    pass
+
 import json
 from dataclasses import dataclass
 from pathlib import Path
@@ -34,6 +40,21 @@ FIGURES_DIR = REPORTS_DIR / "figures"
 # Ensure essential directories exist
 for _p in [PROCESSED_DATA_DIR, ARTIFACTS_DIR, FIGURES_DIR]:
     _p.mkdir(parents=True, exist_ok=True)
+
+
+def df_to_markdown_safe(df: pd.DataFrame) -> str:
+    """
+    Format a pandas DataFrame as a Markdown table safely without requiring tabulate.
+    """
+    try:
+        return df.to_markdown(index=False)
+    except Exception:
+        headers = list(df.columns)
+        lines = ["| " + " | ".join(str(h) for h in headers) + " |"]
+        lines.append("| " + " | ".join(["---"] * len(headers)) + " |")
+        for _, row in df.iterrows():
+            lines.append("| " + " | ".join(str(row[h]) for h in headers) + " |")
+        return "\n".join(lines)
 
 
 # ==============================================================================
